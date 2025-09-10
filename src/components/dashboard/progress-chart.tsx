@@ -41,9 +41,6 @@ export function ProgressChart() {
   const { goals, tasks, loading } = useAppContext();
   const [chartData, setChartData] = React.useState<any[]>([]);
   const [totalProgress, setTotalProgress] = React.useState(0);
-  const [clarityProgress, setClarityProgress] = React.useState(0);
-  const [tractionProgress, setTractionProgress] = React.useState(0);
-  const [monetisationProgress, setMonetisationProgress] = React.useState(0);
 
   React.useEffect(() => {
     if (loading) return;
@@ -57,27 +54,12 @@ export function ProgressChart() {
       const progress = domainItems.length > 0 ? (completedItems.length / domainItems.length) * 100 : 0;
       return {
         name: domain,
-        progress: progress,
-        fill: `hsl(var(--chart-${domains.indexOf(domain) + 1}))`,
+        value: progress,
+        fill: `var(--color-${domain.toLowerCase()})`,
       };
     });
 
-    const clarityData = progressData.find(d => d.name === 'Clarity');
-    const tractionData = progressData.find(d => d.name === 'Traction');
-    const monetisationData = progressData.find(d => d.name === 'Monetisation');
-    
-    setClarityProgress(clarityData ? clarityData.progress : 0);
-    setTractionProgress(tractionData ? tractionData.progress : 0);
-    setMonetisationProgress(monetisationData ? monetisationData.progress : 0);
-    
-    setChartData([
-        {
-            name: "Progress",
-            clarity: clarityData?.progress || 0,
-            traction: tractionData?.progress || 0,
-            monetisation: monetisationData?.progress || 0
-        }
-    ]);
+    setChartData(progressData);
 
     const totalItems = allItems.filter(item => item.domain !== "Global");
     const completedItems = totalItems.filter(item => item.completed);
@@ -117,27 +99,24 @@ export function ProgressChart() {
         >
           <RadialBarChart
             data={chartData}
-            startAngle={-90}
-            endAngle={360}
-            innerRadius="15%"
+            startAngle={90}
+            endAngle={-270}
+            innerRadius="30%"
             outerRadius="100%"
-            barSize={12}
+            barSize={10}
             >
             <PolarGrid
               gridType="circle"
               radialLines={false}
-              stroke="hsl(var(--border))"
+              stroke="none"
               className="fill-none"
-              polarRadius={[88, 76, 64]}
             />
-            <RadialBar dataKey="monetisation" background cornerRadius={10} stackId="a" />
-            <RadialBar dataKey="traction" background cornerRadius={10} stackId="a" />
-            <RadialBar dataKey="clarity" background cornerRadius={10} stackId="a" />
+            <RadialBar dataKey="value" background cornerRadius={10} />
             <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent hideLabel />}
+                content={<ChartTooltipContent hideLabel nameKey="name" />}
                 />
-             <ChartLegend content={<ChartLegendContent nameKey="name" />} className="-translate-y-4 flex-wrap gap-2 [&>*]:basis-1/3 [&>*]:justify-center" />
+             <ChartLegend content={<ChartLegendContent nameKey="name" />} className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/3 [&>*]:justify-center" />
             <Label
               content={({ viewBox }) => {
                 if (viewBox && "cx" in viewBox && "cy" in viewBox) {
