@@ -48,7 +48,7 @@ export function ProgressChart() {
     const allItems: (Task | Goal)[] = [...tasks, ...goals];
     
     const domains = ["Clarity", "Traction", "Monetisation"];
-    const progressData = domains.map(domain => {
+    const progressData = domains.map((domain, index) => {
       const domainItems = allItems.filter(item => item.domain === domain);
       const completedItems = domainItems.filter(item => item.completed && item.domain === domain);
       const progress = domainItems.length > 0 ? (completedItems.length / domainItems.length) * 100 : 0;
@@ -99,8 +99,8 @@ export function ProgressChart() {
         >
           <RadialBarChart
             data={chartData}
-            startAngle={90}
-            endAngle={-270}
+            startAngle={-270}
+            endAngle={90}
             innerRadius="30%"
             outerRadius="100%"
             barSize={10}
