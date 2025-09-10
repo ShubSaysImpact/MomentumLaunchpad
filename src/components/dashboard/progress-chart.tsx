@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Label, PolarGrid, RadialBar, RadialBarChart, Legend } from "recharts"
+import { Label, PolarGrid, RadialBar, RadialBarChart } from "recharts"
 
 import {
   Card,
@@ -50,10 +50,10 @@ export function ProgressChart() {
     const domains = ["Clarity", "Traction", "Monetisation"];
     const progressData = domains.map(domain => {
       const domainItems = allItems.filter(item => item.domain === domain);
-      const completedItems = domainItems.filter(item => item.completed);
+      const completedItems = domainItems.filter(item => item.completed && item.domain === domain);
       const progress = domainItems.length > 0 ? (completedItems.length / domainItems.length) * 100 : 0;
       return {
-        name: domain,
+        name: domain.toLowerCase(),
         value: progress,
         fill: `var(--color-${domain.toLowerCase()})`,
       };
