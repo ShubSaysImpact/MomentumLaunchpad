@@ -30,16 +30,17 @@ export function AppSidebar() {
         <SidebarMenu>
           {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href} passHref legacyBehavior>
-                <SidebarMenuButton
-                  isActive={pathname === item.href}
-                  className={cn(item.disabled && "cursor-not-allowed opacity-50")}
-                  aria-disabled={item.disabled}
-                >
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === item.href}
+                className={cn(item.disabled && "cursor-not-allowed opacity-50")}
+                aria-disabled={item.disabled}
+              >
+                <Link href={item.href}>
                   <item.icon className="size-4" />
                   <span>{item.title}</span>
-                </SidebarMenuButton>
-              </Link>
+                </Link>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
