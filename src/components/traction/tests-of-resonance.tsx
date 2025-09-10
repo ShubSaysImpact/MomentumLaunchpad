@@ -1,8 +1,7 @@
 // src/components/traction/tests-of-resonance.tsx
 "use client";
 
-import { useState } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,11 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { useAppContext } from "@/context/app-context";
-import { ResonanceTest, ResonanceTestData } from "@/lib/types";
+import { ResonanceTestData } from "@/lib/types";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "../ui/skeleton";
 
 const formSchema = z.object({
   message: z.string().min(1, "Message cannot be empty."),
@@ -115,7 +115,10 @@ function ResonanceTestTab({ category, title }: ResonanceTestTabProps) {
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Version History</h3>
         {loading ? (
-            <p>Loading...</p>
+            <div className="space-y-2">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+            </div>
         ) : tests.length > 0 ? (
             <Accordion type="single" collapsible className="w-full">
             {[...tests].reverse().map((test, index) => (
