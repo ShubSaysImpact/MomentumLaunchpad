@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -73,6 +72,7 @@ export function RetrospectiveForm() {
 
   const handleAddLearning = (point: string) => {
     addLearningPoint(point);
+    setLearningPoints(prevPoints => prevPoints.filter(p => p !== point));
     toast({
       title: "Learning Added!",
       description: "The key learning has been added to your Learnings board.",
@@ -95,9 +95,9 @@ export function RetrospectiveForm() {
               name="weeklyGoals"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Weekly Goals</FormLabel>
+                  <FormLabel>What were your goals for the week?</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="What were your goals for this week?" {...field} />
+                    <Textarea placeholder="This helps compare what you planned to do with what actually happened." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -108,9 +108,9 @@ export function RetrospectiveForm() {
               name="successes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Successes</FormLabel>
+                  <FormLabel>What were your successes?</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="What went well this week? What are you proud of?" {...field} />
+                    <Textarea placeholder="Acknowledge wins, no matter how small. This combats the tendency to only focus on problems." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,9 +121,9 @@ export function RetrospectiveForm() {
               name="outcomes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Outcomes &amp; Challenges</FormLabel>
+                  <FormLabel>What were the outcomes?</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="What were the outcomes? Any challenges or surprises?" {...field} />
+                    <Textarea placeholder="What was the objective reality of the week? Include challenges and surprises for a balanced reflection." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -139,21 +139,29 @@ export function RetrospectiveForm() {
             </Button>
           </form>
         </Form>
+        {isGenerating && (
+             <div className="mt-8 space-y-2">
+                <div className="h-4 w-1/4 bg-muted animate-pulse rounded-md"/>
+                <div className="h-10 w-full bg-muted animate-pulse rounded-md"/>
+                <div className="h-10 w-full bg-muted animate-pulse rounded-md"/>
+             </div>
+        )}
         {learningPoints.length > 0 && (
-          <Alert className="mt-8">
-            <Wand2 className="h-4 w-4" />
-            <AlertTitle>Key Learning Points</AlertTitle>
-            <AlertDescription>
-              <ul className="mt-2 space-y-2">
-                {learningPoints.map((point) => (
-                  <li key={nanoid()} className="flex justify-between items-center">
-                    <span>{point}</span>
-                    <Button size="sm" variant="ghost" onClick={() => handleAddLearning(point)}>Add to Learnings</Button>
-                  </li>
-                ))}
-              </ul>
-            </AlertDescription>
-          </Alert>
+          <div className="mt-8">
+            <h3 className="text-lg font-semibold mb-2">Your Key Learnings</h3>
+            <div className="space-y-3">
+              {learningPoints.map((point) => (
+                <Alert key={nanoid()}>
+                    <Wand2 className="h-4 w-4" />
+                    <AlertTitle>AI-Generated Insight</AlertTitle>
+                    <AlertDescription className="flex justify-between items-center">
+                        <p className="flex-1 pr-4">{point}</p>
+                        <Button size="sm" variant="outline" onClick={() => handleAddLearning(point)}>Add to Learnings</Button>
+                    </AlertDescription>
+                </Alert>
+              ))}
+            </div>
+          </div>
         )}
       </CardContent>
     </Card>
