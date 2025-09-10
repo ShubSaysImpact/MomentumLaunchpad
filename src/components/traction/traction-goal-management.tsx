@@ -4,13 +4,13 @@
 import { useAppContext } from "@/context/app-context";
 import { Goal, Task } from "@/lib/types";
 import { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskGroup } from "../dashboard/task-group";
+import { AddItemForm } from "./add-item-form";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 
 export function TractionGoalManagement() {
-    const { goals, tasks, loading } = useAppContext();
+    const { goals, tasks, loading, addGoal, addTask } = useAppContext();
     const [tractionGoals, setTractionGoals] = useState<Goal[]>([]);
     const [tractionTasks, setTractionTasks] = useState<Task[]>([]);
 
@@ -20,12 +20,48 @@ export function TractionGoalManagement() {
             setTractionTasks(tasks.filter(t => t.domain === "Traction"));
         }
     }, [goals, tasks, loading]);
+    
+    const handleAddGoal = (content: string, category: "Weekly" | "Monthly") => {
+        addGoal(content, category, "Traction");
+    }
 
+    const handleAddTask = (content: string, category: "Daily" | "Weekly") => {
+        addTask(content, category, "Traction");
+    }
 
     return (
         <div className="space-y-6">
-            <TaskGroup title="Traction Goals" description="Monthly and weekly objectives for building momentum." items={tractionGoals} />
-            <TaskGroup title="Traction Tasks" description="Weekly and daily action items to achieve your goals." items={tractionTasks} />
+             <Card>
+                <CardHeader>
+                    <CardTitle>Traction Goals</CardTitle>
+                    <CardDescription>Monthly and weekly objectives for building momentum.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <AddItemForm 
+                        itemType="goal" 
+                        onAddItem={handleAddGoal} 
+                        categories={["Monthly", "Weekly"]} 
+                        placeholder="e.g., Secure 10 discovery calls"
+                    />
+                    <TaskGroup title="" description="" items={tractionGoals} />
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Traction Tasks</CardTitle>
+                    <CardDescription>Weekly and daily action items to achieve your goals.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <AddItemForm 
+                        itemType="task" 
+                        onAddItem={handleAddTask} 
+                        categories={["Weekly", "Daily"]} 
+                        placeholder="e.g., Post on LinkedIn 3 times"
+                    />
+                    <TaskGroup title="" description="" items={tractionTasks} />
+                </CardContent>
+            </Card>
         </div>
     )
 }

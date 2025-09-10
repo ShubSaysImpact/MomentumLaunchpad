@@ -24,28 +24,22 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
   }
 
   const getItemType = (item: Task | Goal): "task" | "goal" => {
-    // Goals can be 'Weekly' or 'Monthly'. Tasks can be 'Daily' or 'Weekly'.
-    // 'Monthly' is unique to Goals, and 'Daily' is unique to Tasks.
-    if (item.category === "Monthly") {
-        return "goal";
-    }
-    if (item.category === "Daily") {
-        return "task";
-    }
-    // For 'Weekly', we can infer from the component's title prop.
-    if (title.includes("Goal")) {
-        return "goal";
-    }
-    return "task";
+    return 'content' in item && 'category' in item && (item.category === 'Daily' || item.category === 'Weekly') && 'domain' in item
+      ? 'task'
+      : 'goal';
   };
+  
+  const hasTitle = title && description;
 
   if (loading) {
      return (
         <Card>
+          {hasTitle && (
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
+          )}
             <CardContent className="space-y-2">
                 {[...Array(3)].map((_, i) => (
                     <div key={i} className="flex items-center space-x-2 p-2 rounded-md bg-muted animate-pulse h-10" />
@@ -55,13 +49,8 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
      )
   }
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
+  const content = (
+      <>
         {items.length > 0 ? (
           <div className="space-y-2">
             {items.map((item) => (
@@ -95,7 +84,22 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
             No items in this category.
           </p>
         )}
-      </CardContent>
-    </Card>
-  )
+      </>
+  );
+
+  if (hasTitle) {
+    return (
+       <Card>
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {content}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return <div>{content}</div>
 }
