@@ -10,7 +10,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const GenerateLearningTopicsInputSchema = z.object({
+const GenerateLearningTopicsInputSchema = z.object({
   goals: z.array(z.string()).describe('A list of the user\'s current goals.'),
   tasks: z.array(z.string()).describe('A list of the user\'s current tasks.'),
 });
@@ -32,7 +32,7 @@ const LearningTopicSchema = z.object({
 });
 
 
-export const GenerateLearningTopicsOutputSchema = z.object({
+const GenerateLearningTopicsOutputSchema = z.object({
   learningTopics: z.array(LearningTopicSchema).describe('A list of recommended learning topics.'),
 });
 
