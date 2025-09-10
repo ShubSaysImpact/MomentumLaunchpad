@@ -5,8 +5,8 @@ export default function LearningsPage() {
   return (
     <>
       <PageHeader
-        title="Learnings Board"
-        description="A space to manually add and track your key learning points."
+        title="Points to Learn"
+        description="A dedicated space for your key insights and takeaways."
       />
       <LearningsBoard />
     </>
