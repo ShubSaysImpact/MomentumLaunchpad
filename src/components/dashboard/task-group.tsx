@@ -24,12 +24,22 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
   }
 
   const getItemType = (item: Task | Goal): "task" | "goal" => {
-    // A task can be 'Daily' or 'Weekly', while a goal can be 'Weekly' or 'Monthly'.
-    // 'Monthly' is unique to Goals, 'Daily' is unique to Tasks. 'Weekly' is shared.
-    // The most reliable check is for the category field.
-    return (item.category === 'Daily' || item.category === 'Weekly') && 'completedAt' in item
-      ? 'task'
-      : 'goal';
+    // This is a simple heuristic. A better way might be a 'type' property.
+    if ('category' in item && (item.category === 'Daily' || item.category === 'Weekly')) {
+        // If it can be a weekly goal or a weekly task, we need more info.
+        // Let's assume if it doesn't have a 'domain' it's a global task or we can add more specific properties.
+        // A simple check can be based on properties that only exist on one type.
+        // For now, this is a simplified logic.
+        // Let's refine this: Goal has 'Monthly' or 'Weekly'. Task has 'Daily' or 'Weekly'.
+        if (item.category === 'Daily' || item.category === 'Monthly') {
+            return item.category === 'Daily' ? 'task' : 'goal';
+        }
+        // For 'Weekly', we need a more robust way. For this implementation, we will assume 'content' structure can differentiate.
+        // But a 'type' field would be ideal.
+        // Given the current types, let's assume `Goal` can be `Monthly` and `Task` can be `Daily`.
+        return (item as Task).category === 'Daily' ? 'task' : 'goal';
+    }
+    return 'task';
   };
   
   const hasTitle = title && description;
@@ -67,7 +77,7 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
                 <Checkbox
                   id={item.id}
                   checked={item.completed}
-                  onCheckedChange={() => handleToggle(item.id, getItemType(item))}
+                  onCheckedChange={() => handleToggle(item.id, 'domain' in item && (item.domain === 'Clarity' || item.domain === 'Traction' || item.domain === 'Monetisation' || item.domain === 'Global') && (item.category === 'Weekly' || item.category === 'Monthly') ? 'goal' : 'task')}
                 />
                 <label
                   htmlFor={item.id}
