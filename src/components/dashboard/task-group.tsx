@@ -23,16 +23,11 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
     }
   }
 
-  // A Goal has a category of 'Weekly' or 'Monthly'. A Task has 'Daily' or 'Weekly'.
-  // We can differentiate them by checking for the 'Monthly' or 'Daily' category,
-  // or by checking for properties unique to each if they both are 'Weekly'.
-  // The type definition is the most reliable way. `item.category` is on both.
-  // The most robust check without adding a `type` property is to check for a property that only exists on one type.
-  // Both `Goal` and `Task` have identical properties in the type definition, except for the `category` literals.
-  // A simple way to check is to see if 'Monthly' is a possible category.
   const isItemGoal = (item: Task | Goal): item is Goal => {
-    return item.category === 'Monthly' || (item.category === 'Weekly' && 'domain' in item && (item.domain === 'Clarity' || item.domain === 'Traction' || item.domain === 'Monetisation' || item.domain === 'Global'));
-  }
+    // Goals can be 'Monthly' or 'Weekly'. Tasks can be 'Daily' or 'Weekly'.
+    // 'Monthly' is unique to Goals.
+    return item.category === 'Monthly';
+  };
 
   const hasTitle = title && description;
 
@@ -59,7 +54,7 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
         {items.length > 0 ? (
           <div className="space-y-2">
             {items.map((item) => {
-              const itemIsGoal = item.category === 'Monthly' || (item.category === 'Weekly' && (item as Goal).domain !== undefined);
+              const itemIsGoal = isItemGoal(item);
               return (
               <div
                 key={item.id}
