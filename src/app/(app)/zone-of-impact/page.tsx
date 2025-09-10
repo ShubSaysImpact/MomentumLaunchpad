@@ -74,7 +74,7 @@ export default function ZoneOfImpactPage() {
       updateZoneOfImpact(data);
       toast({
         title: "Actionable Steps Generated!",
-        description: "Review your tailored next steps.",
+        description: "Review your tailored next steps on the right.",
       });
     } catch (error) {
       console.error("Error generating actionable steps:", error);
@@ -112,8 +112,8 @@ export default function ZoneOfImpactPage() {
                         </Link>
                       </Button>
                        <Button asChild variant="outline">
-                        <Link href="https://www.voiceofimpact.com" target="_blank">
-                          Define Mission, Vision & Why <ArrowUpRight className="ml-2"/>
+                        <Link href="https://chatgpt.com/g/g-GxsiHCiUe-shub-the-impact-coach" target="_blank">
+                          Shub the Impact Coach <ArrowUpRight className="ml-2"/>
                         </Link>
                       </Button>
                   </div>
@@ -133,6 +133,7 @@ export default function ZoneOfImpactPage() {
           <div className="lg:col-span-1">
              <ActionableNextSteps 
                 steps={actionableSteps} 
+                isGenerating={isGenerating}
                 onAddGoal={addGoal}
                 onAddTask={addTask}
               />

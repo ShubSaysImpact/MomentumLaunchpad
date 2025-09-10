@@ -27,7 +27,7 @@ export type GenerateActionableStepsInput = z.infer<
 const GenerateActionableStepsOutputSchema = z.object({
   actionableSteps: z
     .string()
-    .describe('A list of 3-5 actionable next steps, formatted as a simple list separated by newlines.'),
+    .describe('A list of 3-5 actionable next steps, formatted as a simple list separated by newlines. Do not include markdown like "-" or numbers.'),
 });
 
 export type GenerateActionableStepsOutput = z.infer<
@@ -44,7 +44,9 @@ const prompt = ai.definePrompt({
   name: 'generateActionableStepsPrompt',
   input: {schema: GenerateActionableStepsInputSchema},
   output: {schema: GenerateActionableStepsOutputSchema},
-  prompt: `You are an expert startup coach for clinician founders. Your task is to synthesize the user's foundational inputs and generate a concise, highly personalized list of 3-5 actionable next steps. The steps should be practical and help the founder leverage their unique strengths and vision to build momentum.
+  prompt: `You are an expert AI coach for clinician founders. Your task is to synthesize the following four pieces of information: a user's unique strengths, their core purpose (mission), their long-term goal (vision), and their deep motivation (why). 
+
+Based on this synthesis, generate a list of 3-5 practical, concrete, and actionable next steps that are specifically tailored to this individual's unique Zone of Impact. The output should be a clear, easy-to-read list. Each step must be on a new line. Do not use any markdown formatting like "-" or numbering.
 
 Analyze the following inputs:
 
