@@ -24,7 +24,10 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
   }
 
   const getItemType = (item: Task | Goal): "task" | "goal" => {
-    return 'content' in item && 'category' in item && (item.category === 'Daily' || item.category === 'Weekly') && 'domain' in item
+    // A task can be 'Daily' or 'Weekly', while a goal can be 'Weekly' or 'Monthly'.
+    // 'Monthly' is unique to Goals, 'Daily' is unique to Tasks. 'Weekly' is shared.
+    // The most reliable check is for the category field.
+    return (item.category === 'Daily' || item.category === 'Weekly') && 'completedAt' in item
       ? 'task'
       : 'goal';
   };
