@@ -5,7 +5,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useAppContext } from "@/context/app-context"
 import { Goal, Task } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { GripVertical } from "lucide-react"
 
 interface TaskGroupProps {
   title: string
@@ -23,6 +22,22 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
       toggleGoal(id)
     }
   }
+
+  const getItemType = (item: Task | Goal): "task" | "goal" => {
+    // Goals can be 'Weekly' or 'Monthly'. Tasks can be 'Daily' or 'Weekly'.
+    // 'Monthly' is unique to Goals, and 'Daily' is unique to Tasks.
+    if (item.category === "Monthly") {
+        return "goal";
+    }
+    if (item.category === "Daily") {
+        return "task";
+    }
+    // For 'Weekly', we can infer from the component's title prop.
+    if (title.includes("Goal")) {
+        return "goal";
+    }
+    return "task";
+  };
 
   if (loading) {
      return (
@@ -60,7 +75,7 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
                 <Checkbox
                   id={item.id}
                   checked={item.completed}
-                  onCheckedChange={() => handleToggle(item.id, 'content' in item &amp;&amp; 'category' in item &amp;&amp; 'domain' in item &amp;&amp; 'id' in item &amp;&amp; !('why' in item) ? ('why' in item ? 'goal' : 'task') : ('category' in item &amp;&amp; 'domain' in item ? 'goal' : 'task') )}
+                  onCheckedChange={() => handleToggle(item.id, getItemType(item))}
                 />
                 <label
                   htmlFor={item.id}
