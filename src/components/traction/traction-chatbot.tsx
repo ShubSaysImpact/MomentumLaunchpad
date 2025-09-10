@@ -1,6 +1,7 @@
+// src/components/traction/traction-chatbot.tsx
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
@@ -20,13 +21,18 @@ export function TractionChatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if(scrollAreaRef.current) {
-            scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
+            // Use `setTimeout` to scroll after the new message has been rendered
+            setTimeout(() => {
+                 if(scrollAreaRef.current) {
+                    scrollAreaRef.current.children[0].scrollTop = scrollAreaRef.current.children[0].scrollHeight;
+                 }
+            }, 0)
         }
     }, [messages]);
 
@@ -35,71 +41,75 @@ export function TractionChatbot() {
 
         const newMessages: Message[] = [...messages, { role: 'user', content: input }];
         setMessages(newMessages);
+        const userInput = input;
         setInput('');
-        setIsLoading(true);
 
-        try {
-            const conversationHistory = newMessages.map(msg => `${msg.role}: ${msg.content}`);
-            const result = await adviseOnBuildingTraction({
-                conversationHistory,
-                userInput: input,
-            });
+        startTransition(async () => {
+            try {
+                const conversationHistory = newMessages.map(msg => `${msg.role}: ${msg.content}`);
+                const result = await adviseOnBuildingTraction({
+                    conversationHistory,
+                    userInput: userInput,
+                });
 
-            if (result && result.aiResponse) {
-                setMessages(prev => [...prev, { role: 'assistant', content: result.aiResponse }]);
+                if (result && result.aiResponse) {
+                    setMessages(prev => [...prev, { role: 'assistant', content: result.aiResponse }]);
+                }
+            } catch (error) {
+                console.error("Error with AI assistant:", error);
+                setMessages(prev => prev.slice(0, -1)); // Remove the user message if AI fails
+                toast({
+                    variant: "destructive",
+                    title: "AI Error",
+                    description: "The assistant is currently unavailable. Please try again later.",
+                });
             }
-        } catch (error) {
-            console.error("Error with AI assistant:", error);
-            toast({
-                variant: "destructive",
-                title: "AI Error",
-                description: "The assistant is currently unavailable. Please try again later.",
-            });
-        } finally {
-            setIsLoading(false);
-        }
+        });
     };
 
     return (
         <>
             <Button
-                className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg"
+                className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg z-50"
                 onClick={() => setIsOpen(true)}
             >
-                <MessageCircle className="h-8 w-8" />
+                <Wand2 className="h-8 w-8" />
                 <span className="sr-only">Open AI Assistant</span>
             </Button>
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetContent className="flex flex-col">
+                <SheetContent className="flex flex-col w-full sm:max-w-lg">
                     <SheetHeader>
                         <SheetTitle>Traction AI Assistant</SheetTitle>
                         <SheetDescription>
-                            Get advice on building traction for your venture.
+                            Your co-pilot for building traction. Ask for ideas, feedback, or strategy.
                         </SheetDescription>
                     </SheetHeader>
-                    <ScrollArea className="flex-1 my-4 pr-4" ref={scrollAreaRef}>
-                        <div className="space-y-4">
+                    <ScrollArea className="flex-1 my-4 pr-4 -mr-6" ref={scrollAreaRef}>
+                        <div className="space-y-4 pr-6">
                             {messages.map((message, index) => (
-                                <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? "justify-end" : "")}>
+                                <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? "justify-end" : "justify-start")}>
                                     {message.role === 'assistant' && (
-                                        <Avatar className="w-8 h-8">
-                                            <AvatarFallback><Wand2/></AvatarFallback>
+                                        <Avatar className="w-8 h-8 border">
+                                            <AvatarFallback><Wand2 className="h-4 w-4"/></AvatarFallback>
                                         </Avatar>
                                     )}
-                                    <div className={cn("p-3 rounded-lg max-w-xs md:max-w-md", message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted')}>
-                                        <p className="text-sm">{message.content}</p>
+                                    <div className={cn(
+                                        "p-3 rounded-lg max-w-sm", 
+                                        message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                                    )}>
+                                        <p className="text-sm" style={{whiteSpace: 'pre-wrap'}}>{message.content}</p>
                                     </div>
                                     {message.role === 'user' && (
-                                        <Avatar className="w-8 h-8">
-                                            <AvatarFallback><User /></AvatarFallback>
+                                        <Avatar className="w-8 h-8 border">
+                                            <AvatarFallback><User className="h-4 w-4"/></AvatarFallback>
                                         </Avatar>
                                     )}
                                 </div>
                             ))}
-                            {isLoading && (
-                                <div className="flex items-start gap-3">
-                                     <Avatar className="w-8 h-8">
-                                        <AvatarFallback><Wand2/></AvatarFallback>
+                            {isPending && (
+                                <div className="flex items-start gap-3 justify-start">
+                                     <Avatar className="w-8 h-8 border">
+                                        <AvatarFallback><Wand2 className="h-4 w-4"/></AvatarFallback>
                                     </Avatar>
                                     <div className="p-3 rounded-lg bg-muted flex items-center">
                                         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -108,16 +118,16 @@ export function TractionChatbot() {
                             )}
                         </div>
                     </ScrollArea>
-                    <SheetFooter>
+                    <SheetFooter className="mt-auto">
                         <div className="flex w-full space-x-2">
                             <Input
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
+                                onKeyDown={(e) => e.key === 'Enter' && !isPending && handleSendMessage()}
                                 placeholder="Ask about building traction..."
-                                disabled={isLoading}
+                                disabled={isPending}
                             />
-                            <Button onClick={handleSendMessage} disabled={isLoading}>
+                            <Button onClick={handleSendMessage} disabled={isPending || !input.trim()} size="icon">
                                 <Send className="h-4 w-4" />
                                 <span className="sr-only">Send</span>
                             </Button>

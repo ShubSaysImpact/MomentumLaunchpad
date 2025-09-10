@@ -1,3 +1,4 @@
+// src/components/traction/traction-goal-management.tsx
 "use client";
 
 import { useAppContext } from "@/context/app-context";
@@ -22,25 +23,9 @@ export function TractionGoalManagement() {
 
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Traction Goals & Tasks</CardTitle>
-                <CardDescription>Set and track your objectives for building momentum.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Tabs defaultValue="goals">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="goals">Goals</TabsTrigger>
-                        <TabsTrigger value="tasks">Tasks</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="goals" className="pt-4">
-                        <TaskGroup title="Traction Goals" description="Monthly and weekly objectives." items={tractionGoals} />
-                    </TabsContent>
-                    <TabsContent value="tasks" className="pt-4">
-                        <TaskGroup title="Traction Tasks" description="Weekly and daily action items." items={tractionTasks} />
-                    </TabsContent>
-                </Tabs>
-            </CardContent>
-        </Card>
+        <div className="space-y-6">
+            <TaskGroup title="Traction Goals" description="Monthly and weekly objectives for building momentum." items={tractionGoals} />
+            <TaskGroup title="Traction Tasks" description="Weekly and daily action items to achieve your goals." items={tractionTasks} />
+        </div>
     )
 }
