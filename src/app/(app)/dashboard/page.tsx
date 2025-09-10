@@ -37,7 +37,7 @@ export default function DashboardPage() {
   return (
     <>
       <PageHeader
-        title="Welcome Back!"
+        title="Welcome back, Clinician Founder"
         description="Here's an at-a-glance overview of your venture's progress."
       />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
