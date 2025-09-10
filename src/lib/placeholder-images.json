@@ -1,3 +1,22 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "clarity-card",
+      "description": "A lightbulb representing new ideas and clarity.",
+      "imageUrl": "https://picsum.photos/seed/clarity/600/400",
+      "imageHint": "idea lightbulb"
+    },
+    {
+      "id": "traction-card",
+      "description": "A chart showing upward growth and traction.",
+      "imageUrl": "https://picsum.photos/seed/traction/600/400",
+      "imageHint": "growth chart"
+    },
+    {
+      "id": "monetisation-card",
+      "description": "Coins and currency to represent monetisation.",
+      "imageUrl": "https://picsum.photos/seed/monetisation/600/400",
+      "imageHint": "money coins"
+    }
+  ]
 }
