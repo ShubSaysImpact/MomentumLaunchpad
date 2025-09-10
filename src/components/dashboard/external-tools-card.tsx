@@ -4,25 +4,24 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
-const tools = [
-    {
-        name: "Voice of Impact GPT",
-        description: "AI coach for content generation and messaging.",
-        href: "https://www.voiceofimpact.com"
-    },
-    {
-        name: "Founder's Hub",
-        description: "Resources and community for clinician founders.",
-        href: "https://www.google.com" // Placeholder link
-    }
-]
+type Tool = {
+    name: string;
+    description: string;
+    href: string;
+}
 
-export function ExternalToolsCard() {
+interface ExternalToolsCardProps {
+    tools: Tool[];
+    title?: string;
+    description?: string;
+}
+
+export function ExternalToolsCard({ tools, title, description }: ExternalToolsCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>External Tools & Resources</CardTitle>
-        <CardDescription>Quick links to helpful external resources and AI coaches.</CardDescription>
+        <CardTitle>{title || "External Tools & Resources"}</CardTitle>
+        <CardDescription>{description || "Quick links to helpful external resources and AI coaches."}</CardDescription>
       </CardHeader>
       <CardContent>
         <ul className="space-y-4">

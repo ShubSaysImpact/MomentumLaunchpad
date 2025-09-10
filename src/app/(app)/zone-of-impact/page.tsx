@@ -112,7 +112,7 @@ export default function ZoneOfImpactPage() {
                         </Link>
                       </Button>
                        <Button asChild variant="outline">
-                        <Link href="https://chatgpt.com/g/g-GxsiHCiUe-shub-the-impact-coach" target="_blank">
+                        <Link href="https://chatgpt.com/g/g-68122c7ac36c819189f999d5b4a834c5-shub-the-impact-coach-mission-vision-and-why" target="_blank">
                           Shub the Impact Coach <ArrowUpRight className="ml-2"/>
                         </Link>
                       </Button>

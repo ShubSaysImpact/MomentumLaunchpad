@@ -8,6 +8,7 @@ import { TestsOfResonance } from "@/components/traction/tests-of-resonance";
 import { TractionGoalManagement } from "@/components/traction/traction-goal-management";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
+import { ExternalToolsCard } from "@/components/dashboard/external-tools-card";
 
 export default function TractionPage() {
   return (
@@ -22,8 +23,19 @@ export default function TractionPage() {
           <TabsTrigger value="strategy">Strategy</TabsTrigger>
           <TabsTrigger value="goals">Goals & Tasks</TabsTrigger>
         </TabsList>
-        <TabsContent value="strategy">
-            <Card className="mt-6">
+        <TabsContent value="strategy" className="space-y-6">
+            <ExternalToolsCard 
+                tools={[
+                    {
+                        name: "Clinician Founder Signature Story Coach",
+                        description: "Craft a compelling narrative to connect with your audience and build credibility.",
+                        href: "https://chatgpt.com/g/g-68ba17977f44819190896b7d74dbbeda-clinician-founder-signature-story-coach"
+                    }
+                ]}
+                title="External Tools & Coaches"
+                description="Specialized AI coaches to help you refine your strategy."
+            />
+            <Card>
                 <CardContent className="p-6">
                     <div className="grid gap-8 lg:grid-cols-2">
                         <div className="space-y-8">

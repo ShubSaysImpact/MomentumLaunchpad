@@ -69,7 +69,15 @@ export default function DashboardPage() {
         {/* Right Column */}
         <div className="lg:col-span-1 space-y-6">
           <ProgressChart />
-          <ExternalToolsCard />
+          <ExternalToolsCard 
+            tools={[
+              {
+                name: "Voice of Impact GPT",
+                description: "AI coach for content generation and messaging.",
+                href: "https://chatgpt.com/g/g-68389b2e3e608191bd6912c2d1bb5038-voice-of-impact"
+              }
+            ]}
+          />
         </div>
 
       </div>
