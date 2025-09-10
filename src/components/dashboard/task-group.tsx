@@ -15,33 +15,25 @@ interface TaskGroupProps {
 export function TaskGroup({ title, description, items }: TaskGroupProps) {
   const { toggleTask, toggleGoal, loading } = useAppContext()
 
-  const handleToggle = (id: string, type: "task" | "goal") => {
-    if (type === "task") {
-      toggleTask(id)
-    } else {
+  const handleToggle = (id: string, isGoal: boolean) => {
+    if (isGoal) {
       toggleGoal(id)
+    } else {
+      toggleTask(id)
     }
   }
 
-  const getItemType = (item: Task | Goal): "task" | "goal" => {
-    // This is a simple heuristic. A better way might be a 'type' property.
-    if ('category' in item && (item.category === 'Daily' || item.category === 'Weekly')) {
-        // If it can be a weekly goal or a weekly task, we need more info.
-        // Let's assume if it doesn't have a 'domain' it's a global task or we can add more specific properties.
-        // A simple check can be based on properties that only exist on one type.
-        // For now, this is a simplified logic.
-        // Let's refine this: Goal has 'Monthly' or 'Weekly'. Task has 'Daily' or 'Weekly'.
-        if (item.category === 'Daily' || item.category === 'Monthly') {
-            return item.category === 'Daily' ? 'task' : 'goal';
-        }
-        // For 'Weekly', we need a more robust way. For this implementation, we will assume 'content' structure can differentiate.
-        // But a 'type' field would be ideal.
-        // Given the current types, let's assume `Goal` can be `Monthly` and `Task` can be `Daily`.
-        return (item as Task).category === 'Daily' ? 'task' : 'goal';
-    }
-    return 'task';
-  };
-  
+  // A Goal has a category of 'Weekly' or 'Monthly'. A Task has 'Daily' or 'Weekly'.
+  // We can differentiate them by checking for the 'Monthly' or 'Daily' category,
+  // or by checking for properties unique to each if they both are 'Weekly'.
+  // The type definition is the most reliable way. `item.category` is on both.
+  // The most robust check without adding a `type` property is to check for a property that only exists on one type.
+  // Both `Goal` and `Task` have identical properties in the type definition, except for the `category` literals.
+  // A simple way to check is to see if 'Monthly' is a possible category.
+  const isItemGoal = (item: Task | Goal): item is Goal => {
+    return item.category === 'Monthly' || (item.category === 'Weekly' && 'domain' in item && (item.domain === 'Clarity' || item.domain === 'Traction' || item.domain === 'Monetisation' || item.domain === 'Global'));
+  }
+
   const hasTitle = title && description;
 
   if (loading) {
@@ -66,7 +58,9 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
       <>
         {items.length > 0 ? (
           <div className="space-y-2">
-            {items.map((item) => (
+            {items.map((item) => {
+              const itemIsGoal = item.category === 'Monthly' || (item.category === 'Weekly' && (item as Goal).domain !== undefined);
+              return (
               <div
                 key={item.id}
                 className={cn(
@@ -77,7 +71,7 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
                 <Checkbox
                   id={item.id}
                   checked={item.completed}
-                  onCheckedChange={() => handleToggle(item.id, 'domain' in item && (item.domain === 'Clarity' || item.domain === 'Traction' || item.domain === 'Monetisation' || item.domain === 'Global') && (item.category === 'Weekly' || item.category === 'Monthly') ? 'goal' : 'task')}
+                  onCheckedChange={() => handleToggle(item.id, itemIsGoal)}
                 />
                 <label
                   htmlFor={item.id}
@@ -90,7 +84,7 @@ export function TaskGroup({ title, description, items }: TaskGroupProps) {
                 </label>
                 <span className="text-xs font-mono px-2 py-1 rounded bg-secondary text-secondary-foreground">{'domain' in item ? item.domain : 'Global'}</span>
               </div>
-            ))}
+            )})}
           </div>
         ) : (
           <p className="text-sm text-muted-foreground text-center py-4">
