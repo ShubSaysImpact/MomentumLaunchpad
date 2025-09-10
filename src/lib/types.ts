@@ -39,10 +39,26 @@ export type ZoneOfImpactData = {
   why: string;
 };
 
+export interface ResonanceTest {
+  id: string;
+  message: string;
+  testMethod: string;
+  results: string;
+  nextSteps: string;
+  createdAt: string; // ISO string
+}
+
+export type ResonanceTestData = {
+  founderStory: ResonanceTest[];
+  ideaPitch: ResonanceTest[];
+  offer: ResonanceTest[];
+};
+
 export type AppData = {
   goals: Goal[];
   tasks: Task[];
   learningPoints: LearningPoint[];
   pinnedIdeas: PinnedIdea[];
   zoneOfImpact: ZoneOfImpactData;
+  resonanceTests: ResonanceTestData;
 };

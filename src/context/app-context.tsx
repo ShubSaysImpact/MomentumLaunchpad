@@ -2,7 +2,7 @@
 
 import { createContext, useContext, ReactNode, useState } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import type { AppData, Task, Goal, LearningPoint, PinnedIdea, ZoneOfImpactData } from "@/lib/types";
+import type { AppData, Task, Goal, LearningPoint, PinnedIdea, ZoneOfImpactData, ResonanceTest, ResonanceTestData } from "@/lib/types";
 import {nanoid} from 'nanoid';
 
 const defaultAppData: AppData = {
@@ -16,6 +16,11 @@ const defaultAppData: AppData = {
     vision: "",
     why: "",
   },
+  resonanceTests: {
+    founderStory: [],
+    ideaPitch: [],
+    offer: [],
+  }
 };
 
 interface AppContextType extends AppData {
@@ -33,6 +38,7 @@ interface AppContextType extends AppData {
   addPinnedIdea: (content: string) => void;
   deletePinnedIdea: (id: string) => void;
   updateZoneOfImpact: (data: Partial<ZoneOfImpactData>) => void;
+  addResonanceTest: (category: keyof ResonanceTestData, test: Omit<ResonanceTest, 'id' | 'createdAt'>) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -99,6 +105,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setData(prev => ({ ...prev, zoneOfImpact: { ...prev.zoneOfImpact, ...zoiData } }));
   };
 
+  const addResonanceTest = (category: keyof ResonanceTestData, test: Omit<ResonanceTest, 'id' | 'createdAt'>) => {
+    const newTest: ResonanceTest = { ...test, id: nanoid(), createdAt: new Date().toISOString() };
+    setData(prev => ({
+        ...prev,
+        resonanceTests: {
+            ...prev.resonanceTests,
+            [category]: [...prev.resonanceTests[category], newTest]
+        }
+    }));
+  };
+
   const value = {
     ...data,
     loading,
@@ -115,6 +132,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     addPinnedIdea,
     deletePinnedIdea,
     updateZoneOfImpact,
+    addResonanceTest,
   };
 
   return (
