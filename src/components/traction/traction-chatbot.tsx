@@ -8,7 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Loader2, MessageCircle, Send, User, Wand2 } from 'lucide-react';
 import { adviseOnBuildingTraction } from '@/ai/flows/advise-on-building-traction';
 import { useToast } from '@/hooks/use-toast';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 
 type Message = {
@@ -113,7 +113,7 @@ export function TractionChatbot() {
                             <Input
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' &amp;&amp; !isLoading && handleSendMessage()}
+                                onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
                                 placeholder="Ask about building traction..."
                                 disabled={isLoading}
                             />
