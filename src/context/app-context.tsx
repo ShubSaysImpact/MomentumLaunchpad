@@ -2,7 +2,7 @@
 
 import { createContext, useContext, ReactNode, useState } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import type { AppData, Task, Goal, LearningPoint, PinnedIdea, ZoneOfImpactData, ResonanceTest, ResonanceTestData } from "@/lib/types";
+import type { AppData, Task, Goal, LearningPoint, PinnedIdea, ZoneOfImpactData, ResonanceTest, ResonanceTestData, Domain, GoalCategory, TaskCategory } from "@/lib/types";
 import {nanoid} from 'nanoid';
 
 const defaultAppData: AppData = {
@@ -25,11 +25,11 @@ const defaultAppData: AppData = {
 
 interface AppContextType extends AppData {
   loading: boolean;
-  addTask: (content: string, category: Task["category"], domain: Task["domain"]) => void;
+  addTask: (content: string, category: TaskCategory, domain: Domain | "Global") => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
-  addGoal: (content: string, category: Goal["category"], domain: Goal["domain"]) => void;
+  addGoal: (content: string, category: GoalCategory, domain: Domain | "Global") => void;
   updateGoal: (id: string, updates: Partial<Goal>) => void;
   toggleGoal: (id: string) => void;
   deleteGoal: (id: string) => void;
@@ -49,7 +49,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     defaultAppData
   );
 
-  const addTask = (content: string, category: Task["category"], domain: Task["domain"]) => {
+  const addTask = (content: string, category: TaskCategory, domain: Domain | "Global") => {
     const newTask: Task = { id: nanoid(), content, category, domain, completed: false, createdAt: new Date().toISOString() };
     setData(prev => ({ ...prev, tasks: [...prev.tasks, newTask] }));
   };
@@ -66,7 +66,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setData(prev => ({ ...prev, tasks: prev.tasks.filter(t => t.id !== id) }));
   };
 
-  const addGoal = (content: string, category: Goal["category"], domain: Goal["domain"]) => {
+  const addGoal = (content: string, category: GoalCategory, domain: Domain | "Global") => {
     const newGoal: Goal = { id: nanoid(), content, category, domain, completed: false, createdAt: new Date().toISOString() };
     setData(prev => ({ ...prev, goals: [...prev.goals, newGoal] }));
   };

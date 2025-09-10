@@ -17,7 +17,7 @@ const GenerateActionableStepsInputSchema = z.object({
     .describe("The clinician founder's Gallup Strengths."),
   mission: z.string().describe("The clinician founder's Mission statement."),
   vision: z.string().describe("The clinician founder's Vision statement."),
-  why: z.string().describe("The clinician founder's core reason 'why'."),
+  why: z.string().describe("The clinician founder's core reason 'why' (Why Discovery Results)."),
 });
 
 export type GenerateActionableStepsInput = z.infer<
@@ -27,7 +27,7 @@ export type GenerateActionableStepsInput = z.infer<
 const GenerateActionableStepsOutputSchema = z.object({
   actionableSteps: z
     .string()
-    .describe('Actionable next steps generated from the inputs.'),
+    .describe('A list of 3-5 actionable next steps, formatted as a simple list separated by newlines.'),
 });
 
 export type GenerateActionableStepsOutput = z.infer<
@@ -44,12 +44,16 @@ const prompt = ai.definePrompt({
   name: 'generateActionableStepsPrompt',
   input: {schema: GenerateActionableStepsInputSchema},
   output: {schema: GenerateActionableStepsOutputSchema},
-  prompt: `Based on the following inputs for a clinician founder, generate 3-5 actionable next steps.
+  prompt: `You are an expert startup coach for clinician founders. Your task is to synthesize the user's foundational inputs and generate a concise, highly personalized list of 3-5 actionable next steps. The steps should be practical and help the founder leverage their unique strengths and vision to build momentum.
 
-Gallup Strengths: {{{gallupStrengths}}}
-Mission: {{{mission}}}
-Vision: {{{vision}}}
-Why: {{{why}}}
+Analyze the following inputs:
+
+- Gallup Strengths: {{{gallupStrengths}}}
+- Mission Statement: {{{mission}}}
+- Vision Statement: {{{vision}}}
+- Why Discovery Results: {{{why}}}
+
+Based on this, generate a list of 3-5 clear, actionable next steps. Each step should be on a new line. Do not use markdown formatting like "-".
 
 Actionable Next Steps:`,
 });

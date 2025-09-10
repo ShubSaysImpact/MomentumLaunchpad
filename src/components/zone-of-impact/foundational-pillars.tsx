@@ -9,18 +9,19 @@ export function FoundationalPillars() {
   const { watch } = useFormContext();
   const gallupStrengths = watch("gallupStrengths");
   const mission = watch("mission");
+  const vision = watch("vision");
   const why = watch("why");
 
   const isStrengthsFilled = !!gallupStrengths;
-  const isMissionFilled = !!mission;
+  const isMissionVisionFilled = !!mission || !!vision;
   const isWhyFilled = !!why;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Foundational Pillars</CardTitle>
+        <CardTitle>Your Foundational Pillars</CardTitle>
         <CardDescription>
-          Your Zone of Impact is where your strengths, mission, and why overlap.
+          Your Zone of Impact lies at the intersection of your unique strengths, mission, and core motivation.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -40,10 +41,10 @@ export function FoundationalPillars() {
           <div
             className={cn(
               "absolute bottom-0 right-0 w-40 h-40 rounded-full transition-colors duration-300 mix-blend-multiply",
-              isMissionFilled ? "bg-chart-3/70" : "bg-muted"
+              isMissionVisionFilled ? "bg-chart-3/70" : "bg-muted"
             )}
           />
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <span className="text-lg font-bold text-foreground">
               Zone of Impact
             </span>
@@ -51,15 +52,15 @@ export function FoundationalPillars() {
         </div>
         <div className="mt-6 space-y-2">
             <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-primary/70 mr-2" />
-                <span>Strengths</span>
+                <div className={cn("w-4 h-4 rounded-full mr-2 transition-colors", isStrengthsFilled ? "bg-primary/70" : "bg-muted")} />
+                <span>Gallup Strengths</span>
             </div>
             <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-accent/70 mr-2" />
-                <span>Your "Why"</span>
+                <div className={cn("w-4 h-4 rounded-full mr-2 transition-colors", isWhyFilled ? "bg-accent/70" : "bg-muted")} />
+                <span>Why Discovery</span>
             </div>
              <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-chart-3/70 mr-2" />
+                <div className={cn("w-4 h-4 rounded-full mr-2 transition-colors", isMissionVisionFilled ? "bg-chart-3/70" : "bg-muted")} />
                 <span>Mission & Vision</span>
             </div>
         </div>
