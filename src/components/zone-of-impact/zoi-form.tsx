@@ -1,6 +1,7 @@
+// src/components/zone-of-impact/zoi-form.tsx
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -33,15 +34,12 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function ZoneOfImpactForm() {
-  const { zoneOfImpact, updateZoneOfImpact, addTask, loading: isAppContextLoading } = useAppContext();
+  const { updateZoneOfImpact, addTask } = useAppContext();
   const { toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
   const [actionableSteps, setActionableSteps] = useState<string[]>([]);
   
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    values: zoneOfImpact,
-  });
+  const form = useFormContext<FormValues>();
 
   const onSubmit = (data: FormValues) => {
     updateZoneOfImpact(data);
@@ -68,7 +66,6 @@ export function ZoneOfImpactForm() {
     try {
       const result = await generateActionableSteps(data);
       if (result && result.actionableSteps) {
-        // AI might return a single string with newlines
         const steps = result.actionableSteps.split('\n').map(s => s.replace(/^- /, '')).filter(Boolean);
         setActionableSteps(steps);
       }
@@ -134,26 +131,27 @@ export function ZoneOfImpactForm() {
           name="mission"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mission Statement</FormLabel>
+              <FormLabel>Mission & Vision</FormLabel>
               <FormControl>
-                <Textarea placeholder="What you do, who you do it for, and the impact." {...field} />
+                <Textarea placeholder="Your combined mission and vision statements." {...field} />
               </FormControl>
-              <FormMessage />
+               <FormMessage />
             </FormItem>
           )}
         />
+        {/* The 'vision' field is now conceptually combined with 'mission', but we still need it in the form for the AI flow. We can hide it. */}
         <FormField
-          control={form.control}
-          name="vision"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Vision Statement</FormLabel>
-              <FormControl>
-                <Textarea placeholder="The future you want to create." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+            control={form.control}
+            name="vision"
+            render={({ field }) => (
+                <FormItem className="hidden">
+                    <FormLabel>Vision Statement</FormLabel>
+                    <FormControl>
+                        <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+            )}
         />
         <div className="flex flex-wrap gap-4">
             <Button type="submit">Save Changes</Button>
