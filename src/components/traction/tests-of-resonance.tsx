@@ -8,14 +8,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useAppContext } from "@/context/app-context";
 import { ResonanceTestData } from "@/lib/types";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "../ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableCaption } from "@/components/ui/table";
+
 
 const formSchema = z.object({
   message: z.string().min(1, "Message cannot be empty."),
@@ -116,46 +117,37 @@ function ResonanceTestTab({ category, title }: ResonanceTestTabProps) {
         <h3 className="text-lg font-medium">Version History</h3>
         {loading ? (
             <div className="space-y-2">
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
             </div>
-        ) : tests.length > 0 ? (
-            <Accordion type="single" collapsible className="w-full">
-            {[...tests].reverse().map((test, index) => (
-              <AccordionItem value={`item-${index}`} key={test.id}>
-                <AccordionTrigger>
-                  <div className="flex justify-between w-full pr-4">
-                    <span>Version #{tests.length - index}</span>
-                    <span className="text-sm text-muted-foreground">{format(new Date(test.createdAt), "PPP")}</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="space-y-4 px-1">
-                    <div>
-                      <h4 className="font-semibold">{title} Message</h4>
-                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{test.message}</p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-4">
-                       <div>
-                         <h4 className="font-semibold">Test Method</h4>
-                         <p className="text-sm text-muted-foreground whitespace-pre-wrap">{test.testMethod}</p>
-                       </div>
-                        <div>
-                         <h4 className="font-semibold">Results</h4>
-                         <p className="text-sm text-muted-foreground whitespace-pre-wrap">{test.results}</p>
-                       </div>
-                        <div>
-                         <h4 className="font-semibold">Next Steps</h4>
-                         <p className="text-sm text-muted-foreground whitespace-pre-wrap">{test.nextSteps}</p>
-                       </div>
-                    </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
         ) : (
-          <p className="text-sm text-muted-foreground text-center py-4">No versions saved yet.</p>
+            <div className="border rounded-lg">
+                <Table>
+                    {tests.length === 0 && <TableCaption>No versions saved yet.</TableCaption>}
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[50px]">Ver.</TableHead>
+                            <TableHead className="w-[120px]">Date</TableHead>
+                            <TableHead>Message/Pitch</TableHead>
+                            <TableHead>Test Method</TableHead>
+                            <TableHead>Results</TableHead>
+                            <TableHead>Next Steps</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                    {[...tests].reverse().map((test, index) => (
+                        <TableRow key={test.id}>
+                            <TableCell className="font-medium">#{tests.length - index}</TableCell>
+                            <TableCell>{format(new Date(test.createdAt), "dd/MM/yy")}</TableCell>
+                            <TableCell className="whitespace-pre-wrap">{test.message}</TableCell>
+                            <TableCell className="whitespace-pre-wrap">{test.testMethod}</TableCell>
+                            <TableCell className="whitespace-pre-wrap">{test.results}</TableCell>
+                            <TableCell className="whitespace-pre-wrap">{test.nextSteps}</TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+            </div>
         )}
       </div>
     </div>
