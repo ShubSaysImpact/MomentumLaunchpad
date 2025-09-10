@@ -126,9 +126,9 @@ export function ProgressChart() {
             <PolarGrid
               gridType="circle"
               radialLines={false}
-              stroke="none"
-              className="first:fill-muted last:fill-background"
-              polarRadius={[100, 88, 76, 64]}
+              stroke="hsl(var(--border))"
+              className="fill-none"
+              polarRadius={[88, 76, 64]}
             />
             <RadialBar dataKey="monetisation" background cornerRadius={10} stackId="a" />
             <RadialBar dataKey="traction" background cornerRadius={10} stackId="a" />
